@@ -33,19 +33,16 @@ void loop() {
   // put your main code here, to run repeatedly:
 
   Wire.requestFrom(imuAddress, requestSize, true);
-  //Serial.println(bytesReceived);
-  
-  /*This following command works because nbyte is initialized as a fixed width integer of size 16 so 0000000000000000.  Wire.read() only reads a byte
-  or 8 bits so 0101010.  <<8 bit shifts 8 bits to the left and the | operator will change each bit if it is a 1.  So it might look like this under the hood
-  00000000000000000 = 01110001 <<8 | 10101011 = 10101011 + 01110001.  https://arduino.stackexchange.com/questions/36383/what-does-this-notation-stands-for-wire-read-8-wire-read
-  */
-  //nbyte = Wire.read() <<8 | Wire.read(); 
+
   
 
 
-  Serial.print(IMU.readAccleration()[0]);
-  Serial.print(IMU.readAccleration()[1]);
-  Serial.print(IMU.readAccleration()[2]);
+  Serial.print(IMU.readAccleration()[0]); Serial.print(", ");
+  Serial.print(IMU.readAccleration()[1]); Serial.print(", ");
+  Serial.print(IMU.readAccleration()[2]); Serial.print(", ");
+  Serial.print(IMU.readRotationalVelocity()[0]); Serial.print(", ");
+  Serial.print(IMU.readRotationalVelocity()[1]); Serial.print(", ");
+  Serial.print(IMU.readRotationalVelocity()[2]); Serial.print(", ");
   Serial.println();
 
 }
