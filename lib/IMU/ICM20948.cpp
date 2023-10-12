@@ -78,37 +78,10 @@ void ICM20948::connect()
 void ICM20948::turnOn()
 {
     //Wake up accelerometer and gyroscope
-    Wire.beginTransmission(ICMAddress);
-    Wire.write(0x06);              //PWR_MGMT_1 Register to wake unit up.
-    Wire.write(0x00);
-    Wire.endTransmission(true);    // Data doesn't transfer until endTransmission has been run
-
-    enableAxes();
-    resetUsrCtrl();
-
-    //Wake up magnetometer
-    Wire.beginTransmission(ICMAddress);
-    Wire.write(0x31);
-    Wire.write(0b00000010);
-    Wire.endTransmission(true);
+    powerManagement1.Write(0x00);
+    powerManagement2.Write(0x00);
+    userControl.Write(0x00);
 }
-
-void ICM20948::enableAxes()
-{
-    Wire.beginTransmission(ICMAddress);
-    Wire.write(PWR_MGMT_2);              //PWR_MGMT_2 Register to enable gyroscope and accelerometer 
-    Wire.write(0x00);
-    Wire.endTransmission(true);
-}
-
-void ICM20948::resetUsrCtrl()
-{
-    Wire.beginTransmission(ICMAddress);
-    Wire.write(USR_CTRL);
-    Wire.write(0x00);
-    Wire.endTransmission(true);
-}
-
 
 std::vector<int> ICM20948::readAccleration()
 {
@@ -120,11 +93,5 @@ std::vector<int> ICM20948::readRotationalVelocity()
 {
     gyroBank.Read();
     return rotationalVelocity.getState();
-}
-
-std::vector<int> ICM20948::readHeading()
-{
-    magnometerBank.Read();
-    return heading.getState();
 }
 

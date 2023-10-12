@@ -73,10 +73,10 @@ class ICM20948
     ComboRegister magnometerBank {ICMAddress, 0x11, 6};
     MotionState acceleration;
     MotionState rotationalVelocity;
-    MotionState heading;
 
-    void enableAxes();
-    void resetUsrCtrl();
+    Register powerManagement1 {ICMAddress, PWR_MGMT_1};
+    Register powerManagement2 {ICMAddress, PWR_MGMT_2};
+    Register userControl {ICMAddress, USR_CTRL};
 
 };
 
