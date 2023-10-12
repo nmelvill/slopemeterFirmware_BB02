@@ -16,23 +16,19 @@ Register::Register(const uint8_t I2CAddress, const uint8_t regAddress)      //Co
 bool Register::Write(uint8_t writeValue)
 {
     Wire.beginTransmission(deviceAddress);
-    Wire.write(address);                            //Moves the pointer to the address
+    Wire.write(address);                           
     Wire.write(writeValue);
-    //End transmission actually is the command that takes whatever is on the register and moves it to the I2C buffer on the processing chip
     uint8_t status = Wire.endTransmission(false); 
     
-    return true;                        //Returns true if successful 
+    return true;                        
 }
 
 
 uint8_t Register::Read()
 {
     Wire.beginTransmission(deviceAddress);
-    Wire.write(address);                            //Moves the pointer to the address
-    //End transmission actually is the command that takes whatever is on the register and moves it to the I2C buffer on the processing chip
+    Wire.write(address);                            
     uint8_t status = Wire.endTransmission(false); 
-    
-    //Go get the values that have been placed on the register and put them on the I2C read buffer
     Wire.requestFrom(deviceAddress, 1, 1);                   
     
     return status;                                  //Returns Success if successful
@@ -52,10 +48,7 @@ uint8_t ComboRegister::Read()
 {
     Wire.beginTransmission(deviceAddress);
     Wire.write(address);                            //Moves the pointer to the address
-    //End transmission actually is the command that takes whatever is on the register and moves it to the I2C buffer on the processing chip
     uint8_t status = Wire.endTransmission(false); 
-    
-    //Go get the values that have been placed on the register and put them on the I2C read buffer
     Wire.requestFrom(deviceAddress, regSize, 1);              
     
     return status;                                  //Returns Success if successful

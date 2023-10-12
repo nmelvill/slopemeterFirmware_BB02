@@ -62,7 +62,6 @@ class ICM20948
     bool getIsConnected() { return isConnected;}
     std::vector<int> readRotationalVelocity();
     std::vector<int> readAccleration();
-    std::vector<int> readHeading();
     
     
     private:
@@ -70,7 +69,6 @@ class ICM20948
     bool isConnected;
     ComboRegister accelerationBank {ICMAddress, 0x2D, 6};
     ComboRegister gyroBank {ICMAddress, 0x33, 6};
-    ComboRegister magnometerBank {ICMAddress, 0x11, 6};
     MotionState acceleration;
     MotionState rotationalVelocity;
 
