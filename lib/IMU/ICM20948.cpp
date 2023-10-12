@@ -88,3 +88,21 @@ std::vector<int> ICM20948::readRotationalVelocity()
     return rotationalVelocity.getState();
 }
 
+//AK09916 class
+AK09916::AK09916()
+    :isConnected(false)
+{
+
+}
+
+void AK09916::turnOn()
+{
+    //Wake up magnetometer
+    control2.Write(0b00000010);
+}
+
+std::vector<int> AK09916::readHeading()
+{
+    magnetometerBank.Read();
+    return heading.getState();
+}

@@ -78,4 +78,23 @@ class ICM20948
 
 };
 
+class AK09916
+{
+    public:
+    AK09916();
+    void turnOn();
+
+    //accessors
+    std::vector<int> readHeading();
+
+    private:
+    uint8_t MagAddress = 0x0C;
+    bool isConnected;
+
+    ComboRegister magnetometerBank {MagAddress, HXL, 6};
+    MotionState heading;
+
+    Register control2 {MagAddress, CNTL2};
+};
+
 #endif

@@ -14,7 +14,6 @@ const uint8_t imuAddress = 0x69;
 int16_t nbyte;
 int8_t WhoAmI;
 
-// put function declarations here:
 
 void setup() {
   // put your setup code here, to run once:
