@@ -7,7 +7,7 @@
 #include "property.h"
 
 ICM20948 IMU;
-//AK09916 MAG;
+AK09916 MAG;
 
 const uint8_t imuAddress = 0x69;
 
@@ -24,7 +24,7 @@ void setup() {
   
   IMU.connect();
   IMU.turnOn();
- // MAG.turnOn();
+  MAG.turnOn();
 }
 
 void loop() {
