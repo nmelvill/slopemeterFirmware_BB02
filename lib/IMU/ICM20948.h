@@ -80,7 +80,4 @@ class ICM20948
 
 };
 
-
-
-
 #endif

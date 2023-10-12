@@ -33,7 +33,7 @@ uint8_t Register::Read()
     uint8_t status = Wire.endTransmission(false); 
     
     //Go get the values that have been placed on the register and put them on the I2C read buffer
-    Wire.requestFrom(deviceAddress, 1, true);                   
+    Wire.requestFrom(deviceAddress, 1, 1);                   
     
     return status;                                  //Returns Success if successful
 }
@@ -56,7 +56,7 @@ uint8_t ComboRegister::Read()
     uint8_t status = Wire.endTransmission(false); 
     
     //Go get the values that have been placed on the register and put them on the I2C read buffer
-    Wire.requestFrom(deviceAddress, regSize, true);               
+    Wire.requestFrom(deviceAddress, regSize, 1);              
     
     return status;                                  //Returns Success if successful
 }
