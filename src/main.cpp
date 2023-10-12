@@ -14,12 +14,14 @@ const uint8_t imuAddress = 0x69;
 int16_t nbyte;
 int8_t WhoAmI;
 
+void continuousRead();
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);  // start serial for output
   Serial.setDebugOutput(true);
 
+  delay(3000);
   //Initialize IMU Class
   
   IMU.connect();
@@ -29,6 +31,13 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
+
+  continuousRead();
+  delay(100);
+}
+
+void continuousRead()
+{
   Serial.print(IMU.readAccleration()[0]); Serial.print(", ");
   Serial.print(IMU.readAccleration()[1]); Serial.print(", ");
   Serial.print(IMU.readAccleration()[2]); Serial.print(", ");
@@ -39,8 +48,4 @@ void loop() {
   //Serial.print(MAG.readHeading()[1]); Serial.print(", ");
   //Serial.print(MAG.readHeading()[2]); Serial.print(", ");
   Serial.println();
-
-  delay(100);
 }
-
-

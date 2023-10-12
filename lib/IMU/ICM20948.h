@@ -10,7 +10,7 @@ class Register
 {
     public:
     Register(const uint8_t I2CAddress, const uint8_t regAddress);
-    bool Write(uint8_t writeValue);
+    uint8_t Write(uint8_t writeValue);
     uint8_t Read(); 
 
     // accessors

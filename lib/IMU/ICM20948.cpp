@@ -13,14 +13,14 @@ Register::Register(const uint8_t I2CAddress, const uint8_t regAddress)      //Co
 {
 }
 
-bool Register::Write(uint8_t writeValue)
+uint8_t Register::Write(uint8_t writeValue)
 {
     Wire.beginTransmission(deviceAddress);
     Wire.write(address);                           
     Wire.write(writeValue);
-    uint8_t status = Wire.endTransmission(false); 
+    uint8_t status = Wire.endTransmission(true); 
     
-    return true;                        
+    return status;                        
 }
 
 
@@ -71,9 +71,17 @@ void ICM20948::connect()
 void ICM20948::turnOn()
 {
     //Wake up accelerometer and gyroscope
-    powerManagement1.Write(0x00);
-    powerManagement2.Write(0x00);
-    userControl.Write(0x00);
+    Serial.print("Power Management 1 Status ");
+    Serial.println(powerManagement1.Write(0x00));
+    delay(1000);
+    Serial.print("Power Management 2 Status ");
+    Serial.println(powerManagement2.Write(0x00));
+    delay(1000);
+    Serial.print("User Control Status ");
+    Serial.println(userControl.Write(0x00));
+    delay(1000);
+    Serial.println();
+    Serial.println("ICM20948 Initialized");
 }
 
 std::vector<int> ICM20948::readAccleration()
