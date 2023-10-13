@@ -32,7 +32,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 
-  continuousRead();
+  //continuousRead();
   delay(100);
 }
 
@@ -44,7 +44,7 @@ void continuousRead()
   Serial.print(IMU.readRotationalVelocity()[0]); Serial.print(", ");
   Serial.print(IMU.readRotationalVelocity()[1]); Serial.print(", ");
   Serial.print(IMU.readRotationalVelocity()[2]); Serial.print(", ");
-  //Serial.print(MAG.readHeading()[0]); Serial.print(", ");
+  Serial.print(MAG.readHeading()[0]); Serial.print(", ");
   //Serial.print(MAG.readHeading()[1]); Serial.print(", ");
   //Serial.print(MAG.readHeading()[2]); Serial.print(", ");
   Serial.println();

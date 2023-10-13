@@ -5,6 +5,8 @@
 #include <string>
 #include "property.h"
 #include "registers.h"
+#include "message.h"
+#include "ArduinoJson.h"
 
 class Register
 {

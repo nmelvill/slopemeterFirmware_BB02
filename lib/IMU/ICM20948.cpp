@@ -3,8 +3,6 @@
 #include <exception>
 #include <string>
 
-
-
 //Register class
 Register::Register(const uint8_t I2CAddress, const uint8_t regAddress)      //Constructor
     : value(0x00),                                                          //member initializer list
@@ -20,16 +18,30 @@ uint8_t Register::Write(uint8_t writeValue)
     Wire.write(writeValue);
     uint8_t status = Wire.endTransmission(true); 
     
+    DynamicJsonDocument statusMessage(64);
+
+    statusMessage["device"] = deviceAddress;
+    statusMessage["register"] = address;
+    statusMessage["value"] = writeValue;
+
+    std::string jsonString;
+    serializeJson(statusMessage, jsonString);
+
+    std::string type = "writeStatus";
+
+    message writeStatusMessage(type, jsonString);
+    writeStatusMessage.getMessage(); 
+
+    delay(500);
     return status;                        
 }
-
 
 uint8_t Register::Read()
 {
     Wire.beginTransmission(deviceAddress);
     Wire.write(address);                            
     uint8_t status = Wire.endTransmission(false); 
-    Wire.requestFrom(deviceAddress, 1, 1);                   
+    Wire.requestFrom(deviceAddress, 1);                
     
     return status;                                  //Returns Success if successful
 }
@@ -49,7 +61,7 @@ uint8_t ComboRegister::Read()
     Wire.beginTransmission(deviceAddress);
     Wire.write(address);                            //Moves the pointer to the address
     uint8_t status = Wire.endTransmission(false); 
-    Wire.requestFrom(deviceAddress, regSize, 1);              
+    Wire.requestFrom(deviceAddress, regSize);         
     
     return status;                                  //Returns Success if successful
 }
@@ -71,17 +83,9 @@ void ICM20948::connect()
 void ICM20948::turnOn()
 {
     //Wake up accelerometer and gyroscope
-    Serial.print("Power Management 1 Status ");
-    Serial.println(powerManagement1.Write(0x00));
-    delay(1000);
-    Serial.print("Power Management 2 Status ");
-    Serial.println(powerManagement2.Write(0x00));
-    delay(1000);
-    Serial.print("User Control Status ");
-    Serial.println(userControl.Write(0x00));
-    delay(1000);
-    Serial.println();
-    Serial.println("ICM20948 Initialized");
+    powerManagement1.Write(0x00);
+    powerManagement2.Write(0x00);
+    userControl.Write(0x00);
 }
 
 std::vector<int> ICM20948::readAccleration()
