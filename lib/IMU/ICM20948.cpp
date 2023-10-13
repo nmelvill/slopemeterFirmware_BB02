@@ -27,7 +27,7 @@ uint8_t Register::Write(uint8_t writeValue)
     std::string jsonString;
     serializeJson(statusMessage, jsonString);
 
-    std::string type = "writeStatus";
+    std::string type = "registerWrite";
 
     message writeStatusMessage(type, jsonString);
     writeStatusMessage.getMessage(); 
