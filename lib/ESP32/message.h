@@ -8,7 +8,7 @@
 class message
 {
     public:
-    message(const std::string type, std::string payload);
+    message(const std::string type, std::string payload, std::string status = "N/A");
     void getMessage();
 
     private:

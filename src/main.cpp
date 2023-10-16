@@ -27,6 +27,7 @@ void setup() {
   IMU.connect();
   IMU.turnOn();
   MAG.turnOn();
+
 }
 
 void loop() {

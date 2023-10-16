@@ -16,7 +16,9 @@ uint8_t Register::Write(uint8_t writeValue)
     Wire.beginTransmission(deviceAddress);
     Wire.write(address);                           
     Wire.write(writeValue);
-    uint8_t status = Wire.endTransmission(true); 
+    uint8_t int_status = Wire.endTransmission(true); 
+
+    std::string status = std::to_string(int_status);
     
     DynamicJsonDocument statusMessage(64);
 
@@ -26,14 +28,12 @@ uint8_t Register::Write(uint8_t writeValue)
 
     std::string jsonString;
     serializeJson(statusMessage, jsonString);
-
     std::string type = "registerWrite";
-
-    message writeStatusMessage(type, jsonString);
+    message writeStatusMessage(type, jsonString, status);
     writeStatusMessage.getMessage(); 
 
     delay(500);
-    return status;                        
+    return int_status;                        
 }
 
 uint8_t Register::Read()
@@ -98,6 +98,31 @@ std::vector<int> ICM20948::readRotationalVelocity()
 {
     gyroBank.Read();
     return rotationalVelocity.getState();
+}
+
+void ICM20948::switchUserBank(int bank)
+{
+    uint8_t writeValue;
+    switch(bank)
+    {
+        case 0:
+            writeValue = 0b00000000;
+            break;
+        case 1:
+            writeValue = 0b00010000;
+            break;
+        case 2:
+            writeValue = 0b00100000;
+            break;
+        case 3:
+            writeValue = 0b00110000;
+            break;
+        default:
+            break;
+    }
+
+    userBank.Write(writeValue);
+
 }
 
 //AK09916 class

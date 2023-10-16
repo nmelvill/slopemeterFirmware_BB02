@@ -64,10 +64,15 @@ class ICM20948
     bool getIsConnected() { return isConnected;}
     std::vector<int> readRotationalVelocity();
     std::vector<int> readAccleration();
+
+    //modifiers
+    void switchUserBank(int bank);
+    
     
     
     private:
     uint8_t ICMAddress = 0x69;
+
     bool isConnected;
     ComboRegister accelerationBank {ICMAddress, 0x2D, 6};
     ComboRegister gyroBank {ICMAddress, 0x33, 6};
@@ -77,6 +82,10 @@ class ICM20948
     Register powerManagement1 {ICMAddress, PWR_MGMT_1};
     Register powerManagement2 {ICMAddress, PWR_MGMT_2};
     Register userControl {ICMAddress, USR_CTRL};
+    Register userBank {ICMAddress, REG_BANK_SEL};
+    
+    
+    
 
 };
 
