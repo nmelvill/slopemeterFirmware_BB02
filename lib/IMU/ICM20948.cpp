@@ -111,6 +111,7 @@ void AK09916::turnOn()
 {
     //Wake up magnetometer
     control2.Write(0b00000010);
+    control3.Write(0x00);
 }
 
 std::vector<int> AK09916::readHeading()

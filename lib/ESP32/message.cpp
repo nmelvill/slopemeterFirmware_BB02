@@ -1,4 +1,5 @@
 #include "message.h"
+//Add class variable for switching between bluetooth and usb port
 
 message::message(const std::string type, std::string payload)
 : type(type),

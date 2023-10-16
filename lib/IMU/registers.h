@@ -13,6 +13,7 @@
 
 //AK09916 Registers
 #define CNTL2 0x31
+#define CNTL3 0x32
 #define HXL 0x11
 
 #endif

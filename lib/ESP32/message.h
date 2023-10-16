@@ -14,6 +14,7 @@ class message
     private:
     std::string type;
     std::string payload;
+    std::string status;
     DynamicJsonDocument jsonMessage {1024};
 
 };

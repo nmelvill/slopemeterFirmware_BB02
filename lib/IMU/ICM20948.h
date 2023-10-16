@@ -97,6 +97,7 @@ class AK09916
     MotionState heading;
 
     Register control2 {MagAddress, CNTL2};
+    Register control3 {MagAddress, CNTL3};
 };
 
 #endif

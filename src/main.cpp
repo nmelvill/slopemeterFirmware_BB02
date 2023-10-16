@@ -9,9 +9,9 @@
 ICM20948 IMU;
 AK09916 MAG;
 
-const uint8_t imuAddress = 0x69;
+//const uint8_t imuAddress = 0x69;
 
-int16_t nbyte;
+//int16_t nbyte;
 int8_t WhoAmI;
 
 void continuousRead();
