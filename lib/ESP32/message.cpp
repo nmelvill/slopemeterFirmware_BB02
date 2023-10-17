@@ -9,7 +9,7 @@ status (status)
 {
 }
 
-void message::getMessage()
+void message::buildMessage()
 {
     jsonMessage["type"] = type;
     jsonMessage["payload"] = payload;
@@ -19,3 +19,17 @@ void message::getMessage()
     Serial.println();
 }
 
+
+messageRouter::messageRouter(const std::string routerType)
+: routerType(routerType)
+
+
+{
+}
+
+std::string messageRouter::handleInput(std::string input)
+{
+    //if (routerType == 'Serial')
+
+        
+}

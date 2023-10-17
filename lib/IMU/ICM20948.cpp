@@ -30,7 +30,7 @@ uint8_t Register::Write(uint8_t writeValue)
     serializeJson(statusMessage, jsonString);
     std::string type = "registerWrite";
     message writeStatusMessage(type, jsonString, status);
-    writeStatusMessage.getMessage(); 
+    writeStatusMessage.buildMessage(); 
 
     delay(500);
     return int_status;                        
@@ -60,7 +60,7 @@ uint8_t ComboRegister::Read()
 {
     Wire.beginTransmission(deviceAddress);
     Wire.write(address);                            //Moves the pointer to the address
-    uint8_t status = Wire.endTransmission(false); 
+    uint8_t status = Wire.endTransmission(true); 
     Wire.requestFrom(deviceAddress, regSize);         
     
     return status;                                  //Returns Success if successful
@@ -135,9 +135,11 @@ AK09916::AK09916()
 
 void AK09916::turnOn()
 {
-    //Wake up magnetometer
-    control2.Write(0b00000010);
+    //Wake up and reset magnetometer
     control3.Write(0b00000001);
+    //Put magnetometer in continuous read mode
+    control2.Write(0b00001000);
+    
 
 
 }

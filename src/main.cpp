@@ -33,8 +33,8 @@ void setup() {
 
 void loop() {
 
-  //continuousRead();
-  delay(100);
+  continuousRead();
+  delay(500);
 }
 
 void continuousRead()
@@ -46,7 +46,7 @@ void continuousRead()
   Serial.print(IMU.readRotationalVelocity()[1]); Serial.print(", ");
   Serial.print(IMU.readRotationalVelocity()[2]); Serial.print(", ");
   Serial.print(MAG.readHeading()[0]); Serial.print(", ");
-  //Serial.print(MAG.readHeading()[1]); Serial.print(", ");
-  //Serial.print(MAG.readHeading()[2]); Serial.print(", ");
+  Serial.print(MAG.readHeading()[1]); Serial.print(", ");
+  Serial.print(MAG.readHeading()[2]); Serial.print(", ");
   Serial.println();
 }
