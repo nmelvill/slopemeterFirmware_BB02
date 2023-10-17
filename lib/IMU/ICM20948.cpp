@@ -40,7 +40,7 @@ uint8_t Register::Read()
 {
     Wire.beginTransmission(deviceAddress);
     Wire.write(address);                            
-    uint8_t status = Wire.endTransmission(false); 
+    uint8_t status = Wire.endTransmission(true); 
     Wire.requestFrom(deviceAddress, 1);                
     
     return status;                                  //Returns Success if successful
@@ -100,6 +100,7 @@ std::vector<int> ICM20948::readRotationalVelocity()
     return rotationalVelocity.getState();
 }
 
+
 void ICM20948::switchUserBank(int bank)
 {
     uint8_t writeValue;
@@ -136,7 +137,9 @@ void AK09916::turnOn()
 {
     //Wake up magnetometer
     control2.Write(0b00000010);
-    control3.Write(0x00);
+    control3.Write(0b00000001);
+
+
 }
 
 std::vector<int> AK09916::readHeading()

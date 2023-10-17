@@ -67,7 +67,7 @@ class ICM20948
 
     //modifiers
     void switchUserBank(int bank);
-    
+    void enablePassThru() {intPinConfig.Write(1<<1);}
     
     
     private:
@@ -81,6 +81,7 @@ class ICM20948
 
     Register powerManagement1 {ICMAddress, PWR_MGMT_1};
     Register powerManagement2 {ICMAddress, PWR_MGMT_2};
+    Register intPinConfig {ICMAddress, INT_PIN_CFG};
     Register userControl {ICMAddress, USR_CTRL};
     Register userBank {ICMAddress, REG_BANK_SEL};
     

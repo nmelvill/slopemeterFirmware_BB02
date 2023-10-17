@@ -10,6 +10,7 @@
 #define PWR_MGMT_1 0x06
 #define PWR_MGMT_2 0x07
 #define REG_BANK_SEL 0x7F
+#define INT_PIN_CFG 0x0F
 
 
 //AK09916 Registers

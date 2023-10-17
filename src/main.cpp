@@ -17,21 +17,21 @@ int8_t WhoAmI;
 void continuousRead();
 
 void setup() {
-  // put your setup code here, to run once:
+
   Serial.begin(115200);  // start serial for output
   Serial.setDebugOutput(true);
 
   delay(3000);
-  //Initialize IMU Class
-  
+
   IMU.connect();
   IMU.turnOn();
+  //In order to use the magnetometer the I2C aux bus of the ICM20948 must be set to pass through mode
+  IMU.enablePassThru();
   MAG.turnOn();
 
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
 
   //continuousRead();
   delay(100);
