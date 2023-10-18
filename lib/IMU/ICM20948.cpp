@@ -12,6 +12,7 @@ Register::Register(const uint8_t I2CAddress, const uint8_t regAddress)      //Co
 }
 
 uint8_t Register::Write(uint8_t writeValue)
+//Writes a values to a specific register, only works for one byte (one register) use combo register for multiple bytes/registers
 {
     Wire.beginTransmission(deviceAddress);
     Wire.write(address);                           
@@ -20,30 +21,43 @@ uint8_t Register::Write(uint8_t writeValue)
 
     std::string status = std::to_string(int_status);
     
-    DynamicJsonDocument statusMessage(64);
-
-    statusMessage["device"] = deviceAddress;
-    statusMessage["register"] = address;
-    statusMessage["value"] = writeValue;
-
-    std::string jsonString;
-    serializeJson(statusMessage, jsonString);
     std::string type = "registerWrite";
-    message writeStatusMessage(type, jsonString, status);
+    
+    std::map<std::string, int> payloadMap;
+    payloadMap["device"] = deviceAddress;
+    payloadMap["register"] = address;
+    payloadMap["value"] = writeValue;
+
+    payload messagePayload(payloadMap);
+    message writeStatusMessage(type, messagePayload.build(), status);
     writeStatusMessage.buildMessage(); 
 
     delay(500);
     return int_status;                        
 }
 
+
 uint8_t Register::Read()
 {
     Wire.beginTransmission(deviceAddress);
     Wire.write(address);                            
-    uint8_t status = Wire.endTransmission(true); 
-    Wire.requestFrom(deviceAddress, 1);                
+    uint8_t int_status = Wire.endTransmission(true); 
+    Wire.requestFrom(deviceAddress, 1);          
+
+    std::string status = std::to_string(int_status);
+    std::string type = "registerRead";
+    byte readValue = Wire.read(); 
     
-    return status;                                  //Returns Success if successful
+    std::map<std::string, int> payloadMap;
+    payloadMap["device"] = deviceAddress;
+    payloadMap["register"] = address;
+    payloadMap["value"] = readValue;
+
+    payload messagePayload(payloadMap);
+    message writeStatusMessage(type, messagePayload.build(), status);
+    writeStatusMessage.buildMessage(); 
+    
+    return int_status;                                  
 }
 
 
@@ -138,7 +152,7 @@ void AK09916::turnOn()
     //Wake up and reset magnetometer
     control3.Write(0b00000001);
     //Put magnetometer in continuous read mode
-    control2.Write(0b00001000);
+    control2.Write(0b00000001);
     
 
 

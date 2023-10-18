@@ -4,6 +4,7 @@
 #include "Arduino.h"
 #include <string>
 #include "ArduinoJson.h"
+#include <map>
 
 class message
 {
@@ -16,6 +17,20 @@ class message
     std::string payload;
     std::string status;
     DynamicJsonDocument jsonMessage {1024};
+
+};
+
+class payload
+{
+    public:
+    payload(std::map<std::string, int> values);
+    std::string build();
+
+    private:
+    void buildJSON();
+    std::map<std::string, int> values;
+    std::string jsonString;
+    DynamicJsonDocument payloadValues {64};
 
 };
 
