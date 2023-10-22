@@ -17,5 +17,6 @@
 #define CNTL2 0x31
 #define CNTL3 0x32
 #define HXL 0x11
+#define ST2 0x18
 
 #endif

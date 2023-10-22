@@ -57,6 +57,8 @@ uint8_t Register::Read()
     message writeStatusMessage(type, messagePayload.build(), status);
     writeStatusMessage.buildMessage(); 
     
+    Serial.println(readValue, BIN);
+
     return int_status;                                  
 }
 
@@ -100,18 +102,6 @@ void ICM20948::turnOn()
     powerManagement1.Write(0x00);
     powerManagement2.Write(0x00);
     userControl.Write(0x00);
-}
-
-std::vector<int> ICM20948::readAccleration()
-{
-    accelerationBank.Read();
-    return acceleration.getState();  
-}
-
-std::vector<int> ICM20948::readRotationalVelocity()
-{
-    gyroBank.Read();
-    return rotationalVelocity.getState();
 }
 
 
@@ -158,8 +148,3 @@ void AK09916::turnOn()
 
 }
 
-std::vector<int> AK09916::readHeading()
-{
-    magnetometerBank.Read();
-    return heading.getState();
-}

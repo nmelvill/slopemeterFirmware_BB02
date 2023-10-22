@@ -3,7 +3,6 @@
 
 #include "Arduino.h"
 #include <string>
-#include "property.h"
 #include "registers.h"
 #include "message.h"
 #include "ArduinoJson.h"
@@ -62,8 +61,6 @@ class ICM20948
 
     //accessors
     bool getIsConnected() { return isConnected;}
-    std::vector<int> readRotationalVelocity();
-    std::vector<int> readAccleration();
 
     //modifiers
     void switchUserBank(int bank);
@@ -76,8 +73,6 @@ class ICM20948
     bool isConnected;
     ComboRegister accelerationBank {ICMAddress, 0x2D, 6};
     ComboRegister gyroBank {ICMAddress, 0x33, 6};
-    MotionState acceleration;
-    MotionState rotationalVelocity;
 
     Register powerManagement1 {ICMAddress, PWR_MGMT_1};
     Register powerManagement2 {ICMAddress, PWR_MGMT_2};
@@ -97,17 +92,19 @@ class AK09916
     void turnOn();
 
     //accessors
-    std::vector<int> readHeading();
+    //std::vector<int> readHeading();
+    void readStatus2() {status2.Read();}
 
     private:
     uint8_t MagAddress = 0x0C;
     bool isConnected;
 
     ComboRegister magnetometerBank {MagAddress, HXL, 6};
-    MotionState heading;
+    //MotionState heading;
 
     Register control2 {MagAddress, CNTL2};
     Register control3 {MagAddress, CNTL3};
+    Register status2 {MagAddress, ST2};
 };
 
 #endif
