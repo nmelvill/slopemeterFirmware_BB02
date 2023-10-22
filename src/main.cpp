@@ -7,18 +7,18 @@
 
 void continuousRead();
 
+skiSensor BB02;
+
 void setup() {
-
-  skiSensor BB02;
-
+  
+BB02.initialize();
 }
 
 
-
 void loop() {
-
   //continuousRead();
   delay(500);
+  //BB02.printValues();
 }
 
 void continuousRead()

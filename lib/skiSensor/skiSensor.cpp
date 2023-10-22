@@ -5,7 +5,6 @@ skiSensor::skiSensor()
     ICM20948 IMU;
     AK09916 MAG;
 
-    initialize();
 }
 
 void skiSensor::initialize()
@@ -20,4 +19,9 @@ void skiSensor::initialize()
     IMU.enablePassThru();
     MAG.turnOn();
     MAG.readStatus2();
+}
+
+void skiSensor::printValues()
+{
+    Serial.println(acceleration.getState()[0]);
 }
