@@ -61,6 +61,8 @@ class ICM20948
 
     //accessors
     bool getIsConnected() { return isConnected;}
+    void readAcceleration() {accelerationBank.Read();}
+    void readRotationalVelocity() {gyroBank.Read();}
 
     //modifiers
     void switchUserBank(int bank);

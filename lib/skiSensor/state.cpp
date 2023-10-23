@@ -1,8 +1,10 @@
 #include "state.h"
+#include <vector>
 
-MotionState::MotionState(bool bigEndian, int byteNum)
+MotionState::MotionState(bool bigEndian, size_t byteNum)
 : x(0), y(0), z(0), bigEndian(bigEndian), byteNum(byteNum)
 {
+    data.resize(6, 0);
 }
 
 void MotionState::update()
@@ -20,9 +22,11 @@ void MotionState::update()
 void MotionState::getData()
 //Reads a byteNum numver of bytes off of the I2C buffer from the ICM 20948
 {
+
     for (int i = 0; i < byteNum; i++)
     {
         data[i] = Wire.read();
+        //Serial.println(data[i],BIN);
 
     }
 

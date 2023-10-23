@@ -8,7 +8,7 @@
 class MotionState
 {
 public:
-    MotionState(bool bigEndian, int byteNum);
+    MotionState(bool bigEndian, size_t byteNum);
     std::vector<int> getState();
 
 private:
@@ -16,11 +16,12 @@ private:
     int16_t y;
     int16_t z;
     int8_t status;
+    size_t byteNum;
     bool bigEndian;
-    std::vector<int> data;
+    std::vector<uint8_t> data;
     std::vector<int> state = {x, y, z};
     void getData();
-    int byteNum;
+    
 
 
     void update();

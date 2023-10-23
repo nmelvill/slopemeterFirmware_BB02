@@ -23,5 +23,6 @@ void skiSensor::initialize()
 
 void skiSensor::printValues()
 {
+    IMU.readAcceleration();
     Serial.println(acceleration.getState()[0]);
 }
