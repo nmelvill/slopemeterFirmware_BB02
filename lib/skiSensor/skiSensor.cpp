@@ -23,6 +23,11 @@ void skiSensor::initialize()
 
 void skiSensor::printValues()
 {
-    IMU.readAcceleration();
-    Serial.println(acceleration.getState()[0]);
+    
+    MAG.readStatus1();
+    delay(500);
+
+    MAG.readHeading();
+    
+    Serial.print("X Heading:  ");Serial.println(heading.getState()[2]);
 }

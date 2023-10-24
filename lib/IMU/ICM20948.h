@@ -11,8 +11,8 @@ class Register
 {
     public:
     Register(const uint8_t I2CAddress, const uint8_t regAddress);
-    uint8_t Write(uint8_t writeValue);
-    uint8_t Read(); 
+    uint8_t Write(uint8_t writeValue, bool printValues = true);
+    uint8_t Read(bool printValues = true); 
 
     // accessors
     uint8_t getDeviceAddress() {return deviceAddress;}
@@ -94,19 +94,22 @@ class AK09916
     void turnOn();
 
     //accessors
-    //std::vector<int> readHeading();
+    void readStatus1() {status1.Read();}
     void readStatus2() {status2.Read();}
+    void readHeading() {magnetometerBank.Read();}
 
     private:
     uint8_t MagAddress = 0x0C;
     bool isConnected;
 
-    ComboRegister magnetometerBank {MagAddress, HXL, 6};
+    //8 Registers instead of 6 to ensure that status2 is also read which is required
+    ComboRegister magnetometerBank {MagAddress, HXL, 8};
     //MotionState heading;
 
     Register control2 {MagAddress, CNTL2};
     Register control3 {MagAddress, CNTL3};
     Register status2 {MagAddress, ST2};
+    Register status1 {MagAddress, ST1};
 };
 
 #endif

@@ -11,10 +11,18 @@ void MotionState::update()
 {
 
     getData();
-    
-    x = data[0] <<8| data[1];     
-    y = data[2] <<8| data[3];   
-    z = data[4] <<8| data[5];  
+
+    if (bigEndian) {
+        x = data[0] <<8| data[1];     
+        y = data[2] <<8| data[3];   
+        z = data[4] <<8| data[5];
+    }
+
+    else {                                  //Little Endian
+        x = data[1] <<8| data[0];     
+        y = data[3] <<8| data[2];   
+        z = data[5] <<8| data[4];
+    }
 
     state = {x, y, z};
 }

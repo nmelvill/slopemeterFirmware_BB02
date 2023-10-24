@@ -11,7 +11,7 @@ Register::Register(const uint8_t I2CAddress, const uint8_t regAddress)      //Co
 {
 }
 
-uint8_t Register::Write(uint8_t writeValue)
+uint8_t Register::Write(uint8_t writeValue, bool printValues /*=true*/) 
 //Writes a values to a specific register, only works for one byte (one register) use combo register for multiple bytes/registers
 {
     Wire.beginTransmission(deviceAddress);
@@ -37,7 +37,7 @@ uint8_t Register::Write(uint8_t writeValue)
 }
 
 
-uint8_t Register::Read()
+uint8_t Register::Read(bool printValues /*=true*/)
 {
     Wire.beginTransmission(deviceAddress);
     Wire.write(address);                            
@@ -142,7 +142,7 @@ void AK09916::turnOn()
     //Wake up and reset magnetometer
     control3.Write(0b00000001);
     //Put magnetometer in continuous read mode
-    control2.Write(0b00000001);
+    control2.Write(0b00000010);
     
 
 
