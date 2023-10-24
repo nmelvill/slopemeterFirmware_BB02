@@ -94,7 +94,7 @@ class AK09916
     void turnOn();
 
     //accessors
-    void readStatus1() {status1.Read();}
+    void readStatus1(bool printValues) {status1.Read(printValues);}
     void readStatus2() {status2.Read();}
     void readHeading() {magnetometerBank.Read();}
 

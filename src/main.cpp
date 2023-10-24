@@ -17,8 +17,8 @@ BB02.initialize();
 
 void loop() {
   //continuousRead();
-  delay(2000);
-  //BB02.printValues();
+  delay(100);
+  BB02.printValues();
 }
 
 void continuousRead()

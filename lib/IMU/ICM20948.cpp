@@ -23,6 +23,7 @@ uint8_t Register::Write(uint8_t writeValue, bool printValues /*=true*/)
     
     std::string type = "registerWrite";
     
+    if (printValues){
     std::map<std::string, int> payloadMap;
     payloadMap["device"] = deviceAddress;
     payloadMap["register"] = address;
@@ -33,6 +34,8 @@ uint8_t Register::Write(uint8_t writeValue, bool printValues /*=true*/)
     writeStatusMessage.buildMessage(); 
 
     delay(500);
+    }
+
     return int_status;                        
 }
 
@@ -48,18 +51,20 @@ uint8_t Register::Read(bool printValues /*=true*/)
     std::string type = "registerRead";
     byte readValue = Wire.read(); 
     
-    std::map<std::string, int> payloadMap;
-    payloadMap["device"] = deviceAddress;
-    payloadMap["register"] = address;
-    payloadMap["value"] = readValue;
+    if (printValues){
+        
+        std::map<std::string, int> payloadMap;
+        payloadMap["device"] = deviceAddress;
+        payloadMap["register"] = address;
+        payloadMap["value"] = readValue;
 
-    payload messagePayload(payloadMap);
-    message writeStatusMessage(type, messagePayload.build(), status);
-    writeStatusMessage.buildMessage(); 
-    
-    Serial.println(readValue, BIN);
+        payload messagePayload(payloadMap);
+        message writeStatusMessage(type, messagePayload.build(), status);
+        writeStatusMessage.buildMessage(); 
 
-    return int_status;                                  
+        Serial.println(readValue, BIN);
+    }
+    return readValue;                                  
 }
 
 
