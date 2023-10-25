@@ -21,12 +21,12 @@ void skiSensor::initialize()
     MAG.readStatus2();
 }
 
-void skiSensor::printValues()
+void skiSensor::printRawHeading()
 {
     
-    MAG.readStatus1(false);
+    //MAG.readStatus1(false);
 
-    MAG.readHeading();
+    MAG.readRawHeading();
 
     std::vector<int> Heading = heading.getState(); 
     

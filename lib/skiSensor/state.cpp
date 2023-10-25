@@ -2,7 +2,7 @@
 #include <vector>
 
 MotionState::MotionState(bool bigEndian, size_t byteNum)
-: x(0), y(0), z(0), bigEndian(bigEndian), byteNum(byteNum)
+: rawx(0), rawy(0), rawz(0), bigEndian(bigEndian), byteNum(byteNum)
 {
     data.resize(6, 0);
 }
@@ -13,18 +13,18 @@ void MotionState::update()
     getData();
 
     if (bigEndian) {
-        x = data[0] <<8| data[1];     
-        y = data[2] <<8| data[3];   
-        z = data[4] <<8| data[5];
+        rawx = data[0] <<8| data[1];     
+        rawy = data[2] <<8| data[3];   
+        rawz = data[4] <<8| data[5];
     }
 
     else {                                  //Little Endian
-        x = data[1] <<8| data[0];     
-        y = data[3] <<8| data[2];   
-        z = data[5] <<8| data[4];
+        rawx = data[1] <<8| data[0];     
+        rawy = data[3] <<8| data[2];   
+        rawz = data[5] <<8| data[4];
     }
 
-    state = {x, y, z};
+    rawState = {rawx, rawy, rawz};
 }
 
 void MotionState::getData()
@@ -34,7 +34,6 @@ void MotionState::getData()
     for (int i = 0; i < byteNum; i++)
     {
         data[i] = Wire.read();
-        //Serial.println(data[i],BIN);
 
     }
 
@@ -43,6 +42,6 @@ void MotionState::getData()
 std::vector<int> MotionState::getState()
 {
     update();
-    return state;
+    return rawState;
 }
 

@@ -149,7 +149,17 @@ void AK09916::turnOn()
     //Put magnetometer in continuous read mode
     control2.Write(0b00000010);
     
-
-
 }
 
+void AK09916::readRawHeading()
+{
+    
+    bool dataReady;
+    
+    dataReady = bitRead(status1.Read(false),0);
+    
+    if (dataReady == 1){
+        magnetometerBank.Read();
+    }
+
+}

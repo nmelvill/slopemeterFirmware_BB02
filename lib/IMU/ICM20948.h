@@ -61,8 +61,8 @@ class ICM20948
 
     //accessors
     bool getIsConnected() { return isConnected;}
-    void readAcceleration() {accelerationBank.Read();}
-    void readRotationalVelocity() {gyroBank.Read();}
+    void readRawAcceleration() {accelerationBank.Read();}
+    void readRawRotationalVelocity() {gyroBank.Read();}
 
     //modifiers
     void switchUserBank(int bank);
@@ -96,7 +96,7 @@ class AK09916
     //accessors
     void readStatus1(bool printValues) {status1.Read(printValues);}
     void readStatus2() {status2.Read();}
-    void readHeading() {magnetometerBank.Read();}
+    void readRawHeading();
 
     private:
     uint8_t MagAddress = 0x0C;

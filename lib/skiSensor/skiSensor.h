@@ -20,8 +20,7 @@ class skiSensor
     
     void initialize();
     
-    //temporary
-    void printValues();
+    void printRawHeading();
     
 
 

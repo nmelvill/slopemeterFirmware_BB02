@@ -12,14 +12,14 @@ public:
     std::vector<int> getState();
 
 private:
-    int16_t x;
-    int16_t y;
-    int16_t z;
+    int16_t rawx;
+    int16_t rawy;
+    int16_t rawz;
     int8_t status;
     size_t byteNum;
     bool bigEndian;
     std::vector<uint8_t> data;
-    std::vector<int> state = {x, y, z};
+    std::vector<int> rawState = {rawx, rawy, rawz};
     void getData();
     
 
