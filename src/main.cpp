@@ -14,5 +14,5 @@ BB02.initialize();
 void loop() {
 
   delay(150);
-  BB02.printRawHeading();
+  //BB02.printRawHeading();
 }

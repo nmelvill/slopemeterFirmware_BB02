@@ -28,12 +28,8 @@ uint8_t Register::Write(uint8_t writeValue, bool printValues /*=true*/)
     payloadMap["device"] = deviceAddress;
     payloadMap["register"] = address;
     payloadMap["value"] = writeValue;
-
-    payload messagePayload(payloadMap);
-    message writeStatusMessage(type, messagePayload.build(), status);
+    message writeStatusMessage(type, payloadMap, status);
     writeStatusMessage.buildMessage(); 
-
-    delay(500);
     }
 
     return int_status;                        
@@ -58,11 +54,8 @@ uint8_t Register::Read(bool printValues /*=true*/)
         payloadMap["register"] = address;
         payloadMap["value"] = readValue;
 
-        payload messagePayload(payloadMap);
-        message writeStatusMessage(type, messagePayload.build(), status);
+        message writeStatusMessage(type, payloadMap, status);
         writeStatusMessage.buildMessage(); 
-
-        Serial.println(readValue, BIN);
     }
     return readValue;                                  
 }
@@ -104,8 +97,11 @@ void ICM20948::connect()
 void ICM20948::turnOn()
 {
     //Wake up accelerometer and gyroscope
+    delay(500);
     powerManagement1.Write(0x00);
+    delay(500);
     powerManagement2.Write(0x00);
+    delay(500);
     userControl.Write(0x00);
 }
 
@@ -145,8 +141,10 @@ AK09916::AK09916()
 void AK09916::turnOn()
 {
     //Wake up and reset magnetometer
+    delay(500);
     control3.Write(0b00000001);
     //Put magnetometer in continuous read mode
+    delay(500);
     control2.Write(0b00000010);
     
 }

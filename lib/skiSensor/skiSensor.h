@@ -33,6 +33,8 @@ class skiSensor
     MotionState rotationalVelocity{true, 6};
     MotionState heading{false, 6};
 
+    void setOutput();
+
     //methods
 
 };

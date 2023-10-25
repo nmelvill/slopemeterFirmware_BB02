@@ -19,6 +19,8 @@ void skiSensor::initialize()
     IMU.enablePassThru();
     MAG.turnOn();
     MAG.readStatus2();
+
+    setOutput();
 }
 
 void skiSensor::printRawHeading()
@@ -33,4 +35,23 @@ void skiSensor::printRawHeading()
     Serial.print("X:  ");Serial.print(Heading[0]);
     Serial.print("  Y:  ");Serial.print(Heading[1]);
     Serial.print("  Z:  ");Serial.println(Heading[2]);
+}
+
+void skiSensor::setOutput()
+
+{
+    bool isSerial = Serial;
+    bool isBLE = false;
+
+    if (isSerial==true && isBLE !=true)
+        {messageRouter interface("serial");
+        }
+    
+    else if (isSerial==true && isBLE==true)
+        {messageRouter interface("both");
+        }
+
+    else if (isSerial==false && isBLE==true)
+        {messageRouter interface("BLE");
+        }
 }

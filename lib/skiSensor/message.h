@@ -9,30 +9,20 @@
 class message
 {
     public:
-    message(const std::string type, std::string payload, std::string status = "N/A");
+    message(const std::string type, std::map<std::string, int> payloadValues, std::string status = "N/A");
     void buildMessage();
 
     private:
     std::string type;
-    std::string payload;
+    std::string payloadString;
     std::string status;
     DynamicJsonDocument jsonMessage {1024};
+    //DynamicJsonDocument payload {1024};
+    std::map<std::string, int> payloadValues;
+    void buildPayload();
 
 };
 
-class payload
-{
-    public:
-    payload(std::map<std::string, int> values);
-    std::string build();
-
-    private:
-    void buildJSON();
-    std::map<std::string, int> values;
-    std::string jsonString;
-    DynamicJsonDocument payloadValues {64};
-
-};
 
 class messageRouter
 {
