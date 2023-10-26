@@ -11,6 +11,11 @@
 #define PWR_MGMT_2 0x07
 #define REG_BANK_SEL 0x7F
 #define INT_PIN_CFG 0x0F
+#define  ODR_ALIGN_EN 0x09
+#define GYRO_SMPLRT_DIV 0x00
+#define GYRO_CONFIG_1 0x01
+#define GYRO_CONFIG_2 0x02
+
 
 
 //AK09916 Registers

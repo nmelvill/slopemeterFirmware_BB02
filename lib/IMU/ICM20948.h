@@ -10,7 +10,7 @@
 class Register
 {
     public:
-    Register(const uint8_t I2CAddress, const uint8_t regAddress);
+    Register(const uint8_t I2CAddress, const uint8_t regAddress, const char userBank=0);
     uint8_t Write(uint8_t writeValue, bool printValues = true);
     uint8_t Read(bool printValues = true); 
 
@@ -21,11 +21,13 @@ class Register
     uint8_t getWriteStatus() { return writeStatus;}
     
     private:
+    void switchUserBank(char bank);
     const uint8_t deviceAddress;
     const uint8_t address;
     uint8_t value;
     uint8_t readStatus;
     uint8_t writeStatus;
+    char userbank;
 };
 
 
@@ -56,17 +58,26 @@ class ICM20948
 {
     public:
     ICM20948();
+    
+    //initializers
     void connect();
     void turnOn();
+    void enablePassThru() {intPinConfig.Write(1<<1);}
+    void setGyroConfig(int samplerateDivider=0,
+                    int fullScale=250, 
+                    bool lowpass=false, 
+                    uint8_t lowpassConfig=0x00,
+                    bool selftestEnable=false,
+                    int averaging=1 );
 
     //accessors
     bool getIsConnected() { return isConnected;}
     void readRawAcceleration() {accelerationBank.Read();}
     void readRawRotationalVelocity() {gyroBank.Read();}
+    
 
-    //modifiers
-    void switchUserBank(int bank);
-    void enablePassThru() {intPinConfig.Write(1<<1);}
+    //modifiers  
+    void setGyroRange(int fullscale=250);
     
     
     private:
@@ -81,6 +92,10 @@ class ICM20948
     Register intPinConfig {ICMAddress, INT_PIN_CFG};
     Register userControl {ICMAddress, USR_CTRL};
     Register userBank {ICMAddress, REG_BANK_SEL};
+    Register odrAlign {ICMAddress, ODR_ALIGN_EN, 2};
+    Register gyroSampleRateDiv {ICMAddress, GYRO_SMPLRT_DIV, 2};
+    Register gyrcoConfig1 {ICMAddress, GYRO_CONFIG_1, 2};
+    Register gyrcoConfig2 {ICMAddress, GYRO_CONFIG_2, 2};
     
     
     
