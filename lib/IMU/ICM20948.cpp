@@ -2,6 +2,7 @@
 #include "Wire.h"
 #include <exception>
 #include <string>
+#include <bitset>
 
 //Register class
 Register::Register(const uint8_t I2CAddress, const uint8_t regAddress, const char userBank /*=0*/)      //Constructor
@@ -155,7 +156,7 @@ void ICM20948::turnOn()
 
 
 void ICM20948::setGyroConfig(int samplerateDivider/*=0*/,
-                    int fullScale/*=250*/, 
+                    int fullScale/*=250*/, //See pg 59 of datasheet, can be 250, 500, 1000 or 2000
                     bool lowpass/*=false*/, 
                     uint8_t lowpassConfig/*=0x00*/,
                     bool selftestEnable/*=false*/,
@@ -172,15 +173,46 @@ void ICM20948::setGyroConfig(int samplerateDivider/*=0*/,
     
     gyroSampleRateDiv.Write(samplerateDivider);
 
+    setGyroRange();
 
+    
 
 
 }
 
-void ICM20948::setGyroRange(int fullscale/*=250*/)
+void ICM20948::setGyroRange(int fullScale/*=250*/)
 {
+    //Set the full scale of degrees per second the gyroscope will read before clipping
+    uint8_t fullScaleSwitch;
+    switch (fullScale)
+    {
+    case 250:
+        fullScaleSwitch = 0b00000000;
+        break;
+    case 500:
+        fullScaleSwitch = 0b00000010;
+        break; 
+    case 1000:
+        fullScaleSwitch = 0b00000100;
+        break;          
+    case 2000:
+        fullScaleSwitch = 0b00000110;
+        break;         
+    default:
+        //TODO Write error here if not a valid full scale type
+        break;
+    }
 
+    uint8_t currentValue(gyrcoConfig1.Read(false));
+    
+    uint8_t mask = 0b11111001;
+    uint8_t masked = currentValue & mask;
+    uint8_t writeValue = masked | fullScaleSwitch;
+
+    gyrcoConfig1.Write(writeValue);
 }
+
+
 
 //AK09916 class
 AK09916::AK09916()

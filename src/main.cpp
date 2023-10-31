@@ -14,5 +14,5 @@ BB02.initialize();
 void loop() {
 
   delay(150);
-  BB02.streamRawValues();
+  //BB02.streamRawValues();
 }
