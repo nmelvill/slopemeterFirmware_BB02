@@ -78,6 +78,10 @@ class ICM20948
 
     //modifiers  
     void setGyroRange(int fullscale=250);
+    void setGyroLowPassConfig(uint8_t lowPassParam = 0);
+    void setGyroLowPasFilter(bool lowPass = false);
+    void setGyroSelfTest(bool selfTest = false);
+    void setGyroAveraging(uint8_t averagingParam = 0);
     
     
     private:

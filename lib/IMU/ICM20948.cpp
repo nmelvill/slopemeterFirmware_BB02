@@ -5,7 +5,7 @@
 #include <bitset>
 
 //Register class
-Register::Register(const uint8_t I2CAddress, const uint8_t regAddress, const char userBank /*=0*/)      //Constructor
+Register::Register(const uint8_t I2CAddress, const uint8_t regAddress, const char userBank /*=0*/) 
     : value(0x00),                                                          //member initializer list
     deviceAddress(I2CAddress), 
     address(regAddress),
@@ -174,14 +174,22 @@ void ICM20948::setGyroConfig(int samplerateDivider/*=0*/,
     gyroSampleRateDiv.Write(samplerateDivider);
 
     setGyroRange();
-
+    setGyroLowPassConfig();
+    setGyroLowPasFilter();
+    setGyroSelfTest();
+    setGyroAveraging();
 
 
 }
 
 void ICM20948::setGyroRange(int fullScale/*=250*/)
+//Set the full scale of degrees per second the gyroscope will read before clipping
+/*  250 DPS
+    500 DPS
+    1000 DPS
+    2000 */
 {
-    //Set the full scale of degrees per second the gyroscope will read before clipping
+    
     uint8_t fullScaleSwitch;
     switch (fullScale)
     {
@@ -209,11 +217,86 @@ void ICM20948::setGyroRange(int fullScale/*=250*/)
     gyrcoConfig1.Write(writeValue);
 }
 
-int ICM20948::maskByte(uint8_t initialValue, char maskLocation, char maskSize, uint8_t writeValue)
+
+void ICM20948::setGyroLowPassConfig(uint8_t lowPassParam)
+/*Sets the low pass configuration for the gyroscope see pg 60 table 16
+
+GYRO_FCHOICE    GYRO_DLPFCFG    3DB BW[HZ]      NBW[HZ]     RATE [HZ]
+0               x               12106           12316       9000
+1               0               196.6           229.8       1125/(1+GYRO_SMPLRT_DIV)Hz where GYRO_SMPLRT_DIV is 0, 1, 2,…255
+1               1               151.8           187.6       1125/(1+GYRO_SMPLRT_DIV)Hz where GYRO_SMPLRT_DIV is 0, 1, 2,…255
+1               2               119.5           154.3       1125/(1+GYRO_SMPLRT_DIV)Hz where GYRO_SMPLRT_DIV is 0, 1, 2,…255
+1               3               51.2            73.3        1125/(1+GYRO_SMPLRT_DIV)Hz where GYRO_SMPLRT_DIV is 0, 1, 2,…255
+1               4               23.9            35.9        1125/(1+GYRO_SMPLRT_DIV)Hz where GYRO_SMPLRT_DIV is 0, 1, 2,…255
+1               5               11.6            17.8        1125/(1+GYRO_SMPLRT_DIV)Hz where GYRO_SMPLRT_DIV is 0, 1, 2,…255
+1               6               5.7             8.9         1125/(1+GYRO_SMPLRT_DIV)Hz where GYRO_SMPLRT_DIV is 0, 1, 2,…255
+1               7               361.4           376.5       1125/(1+GYRO_SMPLRT_DIV)Hz where GYRO_SMPLRT_DIV is 0, 1, 2,…255*/
 
 {
+    lowPassParam <<= 3;
 
+    uint8_t currentValue(gyrcoConfig1.Read(false));
+    uint8_t writeValue = maskByte(currentValue, 5, 3, lowPassParam);
+
+    gyrcoConfig1.Write(writeValue);    
+
+}
+
+
+void ICM20948::setGyroLowPasFilter(bool lowPass)
+//Turns the low pass filter on the gyroscope on or off
+{
+    uint8_t currentValue(gyrcoConfig1.Read(false));
+    uint8_t writeValue = maskByte(currentValue, 0, 1, lowPass);
+
+    gyrcoConfig1.Write(writeValue);
+}
+
+
+void ICM20948::setGyroSelfTest(bool selfTest)
+//Turns the self test on or off for all three gyroscope axes
+{
+    uint8_t selfTestBin;
+
+    if(selfTest)
+    {
+        selfTestBin = 0b00111000;
+    }
+    else
+    { 
+        selfTestBin = 0b00000000;
+    }
     
+    uint8_t currentValue(gyrcoConfig2.Read(false));  
+    uint8_t writeValue = maskByte(currentValue, 5, 3, selfTestBin);
+
+    gyrcoConfig2.Write(writeValue);
+
+}
+
+
+void ICM20948::setGyroAveraging(uint8_t averagingParam)
+//Sets Averaging filter and configuration settings for low-power mode.  Pg 60 Table 17
+/*  0: 1x averaging.
+    1: 2x averaging.
+    2: 4x averaging.
+    3: 8x averaging.
+    4: 16x averaging.
+    5: 32x averaging.
+    6: 64x averaging.
+    7: 128x averaging.*/
+{
+    
+    uint8_t currentValue(gyrcoConfig2.Read(false));  
+    uint8_t writeValue = maskByte(currentValue, 2, 3, averagingParam);
+
+    gyrcoConfig2.Write(writeValue);
+}
+
+
+int ICM20948::maskByte(uint8_t initialValue, char maskLocation, char maskSize, uint8_t writeValue)
+//Masks a read byte from the sensor to apply a specific values to certain bits while retaining the rest
+{
     uint8_t initialMask = 0b00000001;
     uint8_t flipmask = 0b00000000;
     uint8_t mask = 0b11111111;
