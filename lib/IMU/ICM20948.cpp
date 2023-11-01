@@ -175,7 +175,6 @@ void ICM20948::setGyroConfig(int samplerateDivider/*=0*/,
 
     setGyroRange();
 
-    
 
 
 }
@@ -204,14 +203,32 @@ void ICM20948::setGyroRange(int fullScale/*=250*/)
     }
 
     uint8_t currentValue(gyrcoConfig1.Read(false));
-    
-    uint8_t mask = 0b11111001;
-    uint8_t masked = currentValue & mask;
-    uint8_t writeValue = masked | fullScaleSwitch;
+
+    uint8_t writeValue = maskByte(currentValue, 2, 2, fullScaleSwitch);
 
     gyrcoConfig1.Write(writeValue);
 }
 
+int ICM20948::maskByte(uint8_t initialValue, char maskLocation, char maskSize, uint8_t writeValue)
+
+{
+
+    
+    uint8_t initialMask = 0b00000001;
+    uint8_t flipmask = 0b00000000;
+    uint8_t mask = 0b11111111;
+    uint8_t maskedByte;
+    
+    for (int i = maskLocation; i >= (maskLocation - maskSize + 1 ); i--)
+    {
+        uint8_t tempMask = initialMask << i;
+        flipmask = flipmask | tempMask;
+    }
+
+    mask = mask ^ flipmask;
+    
+    return (mask & initialValue) | writeValue;
+}
 
 
 //AK09916 class

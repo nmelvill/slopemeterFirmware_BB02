@@ -96,6 +96,8 @@ class ICM20948
     Register gyroSampleRateDiv {ICMAddress, GYRO_SMPLRT_DIV, 2};
     Register gyrcoConfig1 {ICMAddress, GYRO_CONFIG_1, 2};
     Register gyrcoConfig2 {ICMAddress, GYRO_CONFIG_2, 2};
+
+    int maskByte(uint8_t initialValue, char maskLocation, char maskSize, uint8_t writeValue);
     
     
     
