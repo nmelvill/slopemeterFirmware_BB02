@@ -72,7 +72,7 @@ class ICM20948
                     bool selftestEnable=false,
                     int averaging=1 );
 
-    void setAccelConfig(int samplerateDivider=0,
+    void setAccelConfig(uint16_t samplerateDivider=0,
                 int fullScale=2, 
                 bool lowpass=false, 
                 uint8_t lowpassConfig=0x00,
@@ -92,13 +92,14 @@ class ICM20948
     void setGyroSelfTest(bool selfTest = false);
     void setGyroAveraging(uint8_t averagingParam = 0);
 
+    void setAccelSampleRate(uint16_t samplerateDivider = 0);
     void setAccelRange(int fullscale=2);
     void setAccelLowPassConfig(uint8_t lowPassParam = 0);
     void setAccelLowPasFilter(bool lowPass = false);
     void setAccelSelfTest(bool selfTest = false);
     void setAccelAveraging(uint8_t averagingParam = 0);
 
-    void setUserBank(uint8_t userbank);
+    void setUserBank(uint8_t userbank){userBank.switchUserBank(userbank);}
     
     
     private:
@@ -119,6 +120,8 @@ class ICM20948
     Register gyrcoConfig2 {ICMAddress, GYRO_CONFIG_2, 2};
     Register accelConfig1 {ICMAddress, ACCEL_CONFIG_1, 2};
     Register accelConfig2 {ICMAddress, ACCEL_CONFIG_2, 2};
+    Register accelSampleRateDivMSB {ICMAddress, ACCEL_SMPLRT_DIV_1 , 2};
+    Register accelSampleRateDivLSB {ICMAddress, ACCEL_SMPLRT_DIV_2 , 2};
 
 
     int maskByte(uint8_t initialValue, char maskLocation, char maskSize, uint8_t writeValue);

@@ -21,6 +21,7 @@
 #define ACCEL_CONFIG_2 0x15
 
 
+
 //AK09916 Registers
 #define CNTL2 0x31
 #define CNTL3 0x32

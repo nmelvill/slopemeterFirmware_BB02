@@ -307,7 +307,7 @@ void ICM20948::setGyroAveraging(uint8_t averagingParam)
 }
 
 
-void ICM20948::setAccelConfig(int samplerateDivider/*=0*/,
+void ICM20948::setAccelConfig(uint16_t samplerateDivider/*=0*/,
                     int fullScale/*=2*/, //See pg 64 of datasheet, can be 2g, 4g, 8g, or 16g
                     bool lowpass/*=false*/, 
                     uint8_t lowpassConfig/*=0x00*/,
@@ -315,16 +315,9 @@ void ICM20948::setAccelConfig(int samplerateDivider/*=0*/,
                     int averaging/*=1 */)
 {
     
-    ////Set sample rate of the accelerometer 1.1khz/(1+samplerateDivider) p59
-    //if (samplerateDivider > 256)
-    //{
-    //    //set to maximum sample rate
-    //    //TODO: throw error here if sample rate divider exceeds 256 or is a decimal
-    //    samplerateDivider = 256;
-    //}
-    //
-    //gyroSampleRateDiv.Write(samplerateDivider);
 
+
+    setAccelSampleRate();
     setAccelRange();
     setAccelLowPassConfig();
     setAccelLowPasFilter();
@@ -332,6 +325,27 @@ void ICM20948::setAccelConfig(int samplerateDivider/*=0*/,
     setAccelAveraging();
 
 
+}
+
+void ICM20948::setAccelSampleRate(uint16_t samplerateDivider)
+{
+    
+    //Set sample rate of the accelerometer 1.1khz/(1+samplerateDivider) p63
+    if (samplerateDivider > 4095)
+    {
+        //set to maximum sample rate
+        //TODO: throw error here if sample rate divider exceeds 4095 or is a decimal
+        samplerateDivider = 4095;
+    }
+
+    uint8_t rateDividerMSB = 0x00;
+    uint8_t rateDividerLSB = 0x00;
+
+    rateDividerLSB = rateDividerLSB | samplerateDivider;
+    rateDividerMSB = (samplerateDivider >> 8) | rateDividerMSB;
+
+    accelSampleRateDivMSB.Write(rateDividerMSB);
+    accelSampleRateDivLSB.Write(rateDividerLSB);
 }
 
 
