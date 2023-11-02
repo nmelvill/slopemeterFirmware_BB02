@@ -97,13 +97,14 @@ void Register::switchUserBank(char bank)
 
 
 //Combo Register Class
-ComboRegister::ComboRegister(const uint8_t I2CAddress, const uint8_t regAddress, const uint8_t readSize)
+ComboRegister::ComboRegister(const uint8_t I2CAddress, const uint8_t regAddress, const uint8_t registerSize)
     : value(0x00),                                                         
     deviceAddress(I2CAddress), 
     address(regAddress),
-    regSize(readSize)
+    regSize(registerSize)
 {
 }
+
 
 uint8_t ComboRegister::Read()
 {
@@ -129,6 +130,7 @@ void ICM20948::connect()
     isConnected = true;
 }
 
+
 void ICM20948::turnOn()
 {
 
@@ -142,19 +144,27 @@ void ICM20948::turnOn()
     powerManagement1.Write(0x01);
     delay(100);
     
+    //Enable all accelerometer axes and gyroscope axes
+    powerManagement2.Write(0x00);
+    delay(100);
+
     //Aligns the output data rate
     odrAlign.Write(0x01);
     delay(100);
 
     //Initialize gyrometer configuration
     setGyroConfig();
+    delay(100);
 
     //Initialize accelerometer configuration
     setAccelConfig();
-
-    powerManagement2.Write(0x00);
     delay(100);
+
+    //Disables DMP, FIFO and I2C master modes see p36 of the datasheet.
     userControl.Write(0x00);
+    delay(100);
+
+    userBank.switchUserBank(0);
 }
 
 
@@ -463,10 +473,10 @@ AK09916::AK09916()
 void AK09916::turnOn()
 {
     //Wake up and reset magnetometer
-    delay(500);
+    delay(100);
     control3.Write(0b00000001);
     //Put magnetometer in continuous read mode
-    delay(500);
+    delay(100);
     control2.Write(0b00000010);
     
 }

@@ -19,9 +19,11 @@ class Register
     uint8_t getAddress() {return address;}
     uint8_t getReadStatus() { return readStatus;}
     uint8_t getWriteStatus() { return writeStatus;}
+
+    // modifiers
+    void switchUserBank(char bank);
     
     private:
-    void switchUserBank(char bank);
     const uint8_t deviceAddress;
     const uint8_t address;
     uint8_t value;
@@ -34,7 +36,7 @@ class Register
 class ComboRegister
 {
     public:
-    ComboRegister(const uint8_t I2CAddress, const uint8_t regAddress, uint8_t readSize);
+    ComboRegister(const uint8_t I2CAddress, const uint8_t regAddress, uint8_t registerSize);
     uint8_t Read();
     uint8_t value;
     uint8_t regSize;
@@ -95,6 +97,8 @@ class ICM20948
     void setAccelLowPasFilter(bool lowPass = false);
     void setAccelSelfTest(bool selfTest = false);
     void setAccelAveraging(uint8_t averagingParam = 0);
+
+    void setUserBank(uint8_t userbank);
     
     
     private:
