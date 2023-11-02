@@ -15,7 +15,10 @@
 #define GYRO_SMPLRT_DIV 0x00
 #define GYRO_CONFIG_1 0x01
 #define GYRO_CONFIG_2 0x02
-
+#define ACCEL_SMPLRT_DIV_1 0x10
+#define ACCEL_SMPLRT_DIV_2 0x11
+#define ACCEL_CONFIG_1 0x14
+#define ACCEL_CONFIG_2 0x15
 
 
 //AK09916 Registers

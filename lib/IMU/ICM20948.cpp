@@ -149,6 +149,9 @@ void ICM20948::turnOn()
     //Initialize gyrometer configuration
     setGyroConfig();
 
+    //Initialize accelerometer configuration
+    setAccelConfig();
+
     powerManagement2.Write(0x00);
     delay(100);
     userControl.Write(0x00);
@@ -291,6 +294,142 @@ void ICM20948::setGyroAveraging(uint8_t averagingParam)
     uint8_t writeValue = maskByte(currentValue, 2, 3, averagingParam);
 
     gyrcoConfig2.Write(writeValue);
+}
+
+
+void ICM20948::setAccelConfig(int samplerateDivider/*=0*/,
+                    int fullScale/*=2*/, //See pg 64 of datasheet, can be 2g, 4g, 8g, or 16g
+                    bool lowpass/*=false*/, 
+                    uint8_t lowpassConfig/*=0x00*/,
+                    bool selftestEnable/*=false*/,
+                    int averaging/*=1 */)
+{
+    
+    ////Set sample rate of the accelerometer 1.1khz/(1+samplerateDivider) p59
+    //if (samplerateDivider > 256)
+    //{
+    //    //set to maximum sample rate
+    //    //TODO: throw error here if sample rate divider exceeds 256 or is a decimal
+    //    samplerateDivider = 256;
+    //}
+    //
+    //gyroSampleRateDiv.Write(samplerateDivider);
+
+    setAccelRange();
+    setAccelLowPassConfig();
+    setAccelLowPasFilter();
+    setAccelSelfTest();
+    setAccelAveraging();
+
+
+}
+
+
+void ICM20948::setAccelRange(int fullScale/*=250*/)
+//Set the full scale of gs (acceleration of earths gravity) that the accelerometer will read before clipping
+/*  2g
+    4g
+    8g
+    16g */
+{
+    
+    uint8_t fullScaleSwitch;
+    switch (fullScale)
+    {
+    case 2:
+        fullScaleSwitch = 0b00000000;
+        break;
+    case 4:
+        fullScaleSwitch = 0b00000010;
+        break; 
+    case 8:
+        fullScaleSwitch = 0b00000100;
+        break;          
+    case 16:
+        fullScaleSwitch = 0b00000110;
+        break;         
+    default:
+        //TODO Write error here if not a valid full scale type
+        break;
+    }
+
+    uint8_t currentValue(accelConfig1.Read(false));
+
+    uint8_t writeValue = maskByte(currentValue, 2, 2, fullScaleSwitch);
+
+    accelConfig1.Write(writeValue);
+}
+
+
+void ICM20948::setAccelLowPassConfig(uint8_t lowPassParam)
+/*Sets the low pass configuration for the accelerometer see pg 64 table 18
+
+ACCEL_FCHOICE   ACCEL_DLPFCFG   3DB BW[HZ]      NBW[HZ]     RATE [HZ]
+0               x               1209            1248        4500
+1               0               246             265         1125/(1+GYRO_SMPLRT_DIV)Hz where GYRO_SMPLRT_DIV is 0, 1, 2,…255
+1               1               246             265         1125/(1+GYRO_SMPLRT_DIV)Hz where GYRO_SMPLRT_DIV is 0, 1, 2,…255
+1               2               111.4           136         1125/(1+GYRO_SMPLRT_DIV)Hz where GYRO_SMPLRT_DIV is 0, 1, 2,…255
+1               3               50.4            68.8        1125/(1+GYRO_SMPLRT_DIV)Hz where GYRO_SMPLRT_DIV is 0, 1, 2,…255
+1               4               23.9            34.4        1125/(1+GYRO_SMPLRT_DIV)Hz where GYRO_SMPLRT_DIV is 0, 1, 2,…255
+1               5               11.5            17          1125/(1+GYRO_SMPLRT_DIV)Hz where GYRO_SMPLRT_DIV is 0, 1, 2,…255
+1               6               5.7             8.3         1125/(1+GYRO_SMPLRT_DIV)Hz where GYRO_SMPLRT_DIV is 0, 1, 2,…255
+1               7               473             499         1125/(1+GYRO_SMPLRT_DIV)Hz where GYRO_SMPLRT_DIV is 0, 1, 2,…255*/
+
+{
+    lowPassParam <<= 3;
+
+    uint8_t currentValue(accelConfig1.Read(false));
+    uint8_t writeValue = maskByte(currentValue, 5, 3, lowPassParam);
+
+    accelConfig1.Write(writeValue);    
+
+}
+
+
+void ICM20948::setAccelLowPasFilter(bool lowPass)
+//Turns the low pass filter on the accelerometer on or off
+{
+    uint8_t currentValue(accelConfig1.Read(false));
+    uint8_t writeValue = maskByte(currentValue, 0, 1, lowPass);
+
+    accelConfig1.Write(writeValue);
+}
+
+
+void ICM20948::setAccelSelfTest(bool selfTest)
+//Turns the self test on or off for all three accelerometer axes
+{
+    uint8_t selfTestBin;
+
+    if(selfTest)
+    {
+        selfTestBin = 0b00011100;
+    }
+    else
+    { 
+        selfTestBin = 0b00000000;
+    }
+    
+    uint8_t currentValue(accelConfig2.Read(false));  
+    uint8_t writeValue = maskByte(currentValue, 4, 3, selfTestBin);
+
+    accelConfig2.Write(writeValue);
+
+}
+
+
+void ICM20948::setAccelAveraging(uint8_t averagingParam)
+//Sets Averaging filter and configuration settings for low-power mode.  Pg 65 Table 19
+/*  0: Average 1 or 4 samples depending on ACCEL_FCHOICE (see Table 19).
+    1: Averages 8 Samples.
+    2: Averages 16 Samples.
+    3: Averages 32 Samples.*/
+{
+    
+    uint8_t currentValue(accelConfig2.Read(false));  
+    uint8_t writeValue = maskByte(currentValue, 2, 3, averagingParam);
+
+    accelConfig2.Write(writeValue);
 }
 
 
