@@ -35,6 +35,7 @@ uint8_t Register::Write(uint8_t writeValue, bool printValues /*=true*/)
         
         message writeStatusMessage(type, payloadMap, status);
         writeStatusMessage.buildMessage(); 
+        writeStatusMessage.send();
     }
 
     return int_status;                        
@@ -63,6 +64,7 @@ uint8_t Register::Read(bool printValues /*=true*/)
 
         message writeStatusMessage(type, payloadMap, status);
         writeStatusMessage.buildMessage(); 
+        writeStatusMessage.send();
     }
     return readValue;                                  
 }

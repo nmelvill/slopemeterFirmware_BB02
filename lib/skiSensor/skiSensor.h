@@ -19,8 +19,8 @@ class skiSensor
     skiSensor();
     
     void initialize();
-    
     void streamRawValues();
+    void setOutput(char outputType = 0){message::s_routerType = outputType;}  //0 = Serial, 1= BLE, 2= Both
     
     
 
@@ -33,8 +33,6 @@ class skiSensor
     MotionState acceleration{true, 6};
     MotionState rotationalVelocity{true, 6};
     MotionState heading{false, 6};
-
-    void setOutput();
 
     //methods
 

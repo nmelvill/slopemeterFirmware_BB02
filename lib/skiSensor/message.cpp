@@ -1,5 +1,4 @@
 #include "message.h"
-//Add class variable for switching between bluetooth and usb port
 
 message::message(const std::string type, std::map<std::string, int> payloadValues, std::string status)
 : type(type),
@@ -8,6 +7,8 @@ status (status)
 {
 }
 
+char message::s_routerType;
+
 
 void message::buildMessage()
 //Creates a json object then nests a payload json object inside then serializes all of it into a string and prints it
@@ -15,9 +16,7 @@ void message::buildMessage()
     jsonMessage["type"] = type;
     jsonMessage["status"] = status;
     buildPayload();
-
-    serializeJson(jsonMessage, Serial);
-    Serial.println();
+    
 }
 
 
@@ -32,16 +31,21 @@ void message::buildPayload()
 }
 
 
-messageRouter::messageRouter(const std::string routerType)
-: routerType(routerType)
-{
-}
 
-
-std::string messageRouter::handleInput(std::string input)
+void message::send()
 {
-    //if (routerType == 'Serial')
-    std::string test = "test";
-    return test;
-        
+    
+    switch(s_routerType)
+    {
+    case 0:
+        serializeJson(jsonMessage, Serial); Serial.println();
+        break;
+    
+    case 1:
+        break;
+    
+    case 2:
+        serializeJson(jsonMessage, Serial); Serial.println();
+        break;
+    }
 }

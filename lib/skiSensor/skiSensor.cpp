@@ -7,6 +7,7 @@ skiSensor::skiSensor()
 
 }
 
+
 void skiSensor::initialize()
 {
     Serial.begin(115200);
@@ -20,8 +21,9 @@ void skiSensor::initialize()
     MAG.turnOn();
     MAG.readStatus2();
 
-    setOutput();
 }
+
+
 
 void skiSensor::streamRawValues()
 {
@@ -49,24 +51,11 @@ void skiSensor::streamRawValues()
 
     message valueMessage(type, payloadMap, "0");
     valueMessage.buildMessage();
+    valueMessage.send();
 
 }
 
-void skiSensor::setOutput()
-
+void setOutput(char outputtype)
 {
-    bool isSerial = Serial;
-    bool isBLE = false;
-
-    if (isSerial==true && isBLE !=true)
-        {messageRouter interface("serial");
-        }
-    
-    else if (isSerial==true && isBLE==true)
-        {messageRouter interface("both");
-        }
-
-    else if (isSerial==false && isBLE==true)
-        {messageRouter interface("BLE");
-        }
+    message::s_routerType = outputtype;
 }
