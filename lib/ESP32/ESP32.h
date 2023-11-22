@@ -2,15 +2,16 @@
 #define ESP32_H
 
 #include "Arduino.h"
+#include "BLE.h"
+
 
 
 class esp32
 {
     public:
     esp32();
-    
+  
     private:
-
     
 
 };

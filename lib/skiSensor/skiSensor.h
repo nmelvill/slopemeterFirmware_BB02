@@ -9,6 +9,9 @@
 #include "ICM20948.h"
 #include "state.h"
 #include <array>
+#include "ESP32.h"
+
+
 
 
 class skiSensor
@@ -21,14 +24,18 @@ class skiSensor
     void initialize();
     void streamRawValues();
     void setOutput(char outputType = 0){message::s_routerType = outputType;}  //0 = Serial, 1= BLE, 2= Both
-    
-    
 
+    std::vector<int> getRawAcceleration();
+    std::vector<int> getRawRotationalVelocity();
+    std::vector<int> getRawHeading();
+
+    
 
     private:
     
     ICM20948 IMU;
     AK09916 MAG;
+    esp32 controller;
 
     MotionState acceleration{true, 6};
     MotionState rotationalVelocity{true, 6};

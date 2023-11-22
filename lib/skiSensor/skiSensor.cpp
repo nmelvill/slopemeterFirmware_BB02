@@ -1,9 +1,11 @@
 #include "skiSensor.h"
 
+
 skiSensor::skiSensor()
 {
     ICM20948 IMU;
     AK09916 MAG;
+    esp32 controller;
 
 }
 
@@ -19,22 +21,21 @@ void skiSensor::initialize()
         //In order to use the magnetometer the I2C aux bus of the ICM20948 must be set to pass through mode
     IMU.enablePassThru();
     MAG.turnOn();
-    MAG.readStatus2();
 
+    MAG.readStatus2();      //Do I need this?
+
+    //controller.startBLE();
+    //controller.startAdvertising();
 }
 
 
 
 void skiSensor::streamRawValues()
 {
-    IMU.readRawAcceleration();
-    std::vector<int> Acceleration = acceleration.getState(); 
-    
-    IMU.readRawRotationalVelocity();
-    std::vector<int> RotationalVelocity = rotationalVelocity.getState(); 
-    
-    MAG.readRawHeading();
-    std::vector<int> Heading = heading.getState(); 
+    //maybe save this in an instance variable rather than creating two identical variables?
+    std::vector<int> Acceleration = getRawAcceleration();
+    std::vector<int> RotationalVelocity = getRawRotationalVelocity();
+    std::vector<int> Heading = getRawHeading();
     
     std::string type = "motionReading";
         
@@ -58,4 +59,31 @@ void skiSensor::streamRawValues()
 void setOutput(char outputtype)
 {
     message::s_routerType = outputtype;
+}
+
+
+std::vector<int> skiSensor::getRawAcceleration()
+{
+    IMU.readRawAcceleration();
+    std::vector<int> rawAcceleration = acceleration.getState(); 
+
+    return rawAcceleration;
+}
+
+
+std::vector<int> skiSensor::getRawRotationalVelocity()
+{
+    IMU.readRawRotationalVelocity();
+    std::vector<int> rawRotationalVelocity = rotationalVelocity.getState(); 
+
+    return rawRotationalVelocity;
+}
+
+
+std::vector<int> skiSensor::getRawHeading()
+{
+    MAG.readRawHeading();
+    std::vector<int> rawHeading = heading.getState(); 
+
+    return rawHeading;
 }
