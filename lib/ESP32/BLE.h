@@ -4,9 +4,10 @@
 #define BLE_H
 
 
-//need for BLE 
-#include "NimBLEDevice.h"
+
+
 #include "Arduino.h"
+#include "esp_nimble_hci.h"
 
 
 #define IMU_SERVICE_UUID                    "5d966f57-d014-4744-8704-f256701f0409"
@@ -17,6 +18,6 @@
 #define TEMPERATURE_CHARACTERISTIC_UUID     "16bb58ab-5b69-4fc6-9bf5-a6794031e6cc"
 
 
-void initializeBLE();
+
 
 #endif
