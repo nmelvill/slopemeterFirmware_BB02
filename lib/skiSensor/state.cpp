@@ -39,7 +39,7 @@ void MotionState::getData()
 
 }
 
-std::vector<int> MotionState::getState()
+std::vector<int16_t> MotionState::getState()
 {
     update();
     return rawState;

@@ -7,15 +7,14 @@ skiSensor BB02;
 void setup() 
 {
 
-  delay(3000);
-  initializeBLE();
   BB02.initialize();
 
 }
 
 
 void loop() {
-
-
+  delay(3000);
+  BB02.streamRawValuesToBLE();
+  //BB02.streamRawValuesToSerial();
 }
 
