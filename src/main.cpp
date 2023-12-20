@@ -1,20 +1,21 @@
-
 #include "skiSensor.h"
+#include "ble.h"
 
-
-skiSensor BB02;
+BLEInterface* BLEProcess = new BLEInterface;
+skiSensor* BB02 = new skiSensor(BLEProcess);
 
 void setup() 
 {
 
-  BB02.initialize();
+  BB02->initialize();
+  BLEProcess->initialize();
+  BLEProcess->startAdvertising();
 
 }
 
 
 void loop() {
   delay(3000);
-  BB02.streamRawValuesToBLE();
-  //BB02.streamRawValuesToSerial();
+  BB02->run();
 }
 

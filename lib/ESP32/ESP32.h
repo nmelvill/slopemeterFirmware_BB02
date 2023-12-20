@@ -2,7 +2,6 @@
 #define ESP32_H
 
 #include "Arduino.h"
-#include "BLE.h"
 
 
 

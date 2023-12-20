@@ -2,13 +2,17 @@
 
 
 
-skiSensor::skiSensor()
+
+skiSensor::skiSensor(BLEInterface* pBLEInterface) : pBLEProcess(pBLEInterface)
 {
+
+    devicestate = starting;
+    
     ICM20948 IMU;
     AK09916 MAG;
     esp32 controller;
-    BLE BLEProcess;
 
+    //devicestate = ready;
 }
 
 
@@ -28,12 +32,17 @@ void skiSensor::initialize()
 
     MAG.readStatus2();      //Do I need this?
     
-    BLEProcess.initialize();
+
     delay(500);
 
-    BLEProcess.startAdvertising();
+    
 }
 
+
+void skiSensor::run()
+{
+//TODO: Needs to have a handler for messages
+}
 
 
 void skiSensor::streamRawValuesToSerial()
@@ -97,16 +106,18 @@ std::vector<int16_t> skiSensor::getRawHeading()
 }
 
 void skiSensor::streamRawValuesToBLE()
+//Converts an array of 3 axis IMU values into 3 separate 64bit integers and streams them over BLE
 {
 
     //Combine separate values into one 64bit integer to send over BLE
     uint64_t Acceration3Axis = serializeVector(getRawAcceleration());
-    uint64_t Rotation3Axis = 0;
-    uint64_t Heading3Axis = 0;
+    uint64_t Rotation3Axis = serializeVector(getRawRotationalVelocity());
+    uint64_t Heading3Axis = serializeVector(getRawHeading());
 
-    BLEProcess.streamAcceleration(Acceration3Axis);
-    //BLEProcess.stramRotation(Rotation3Axis);
-    //BLEProcess.streamHeading(Heading3Axis);
+    //Stream (notify) values over BLE
+    pBLEProcess->streamAcceleration(Acceration3Axis);
+    pBLEProcess->streamRotation(Rotation3Axis);
+    pBLEProcess->streamHeading(Heading3Axis);
 }
 
 

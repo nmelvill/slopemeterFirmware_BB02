@@ -7,11 +7,13 @@ static const char* TAG = "BB02";
 
 #include <Arduino.h>
 #include "Wire.h"
+#include "ble.h"
 
 #include "ICM20948.h"
 #include "state.h"
 #include <array>
 #include "ESP32.h"
+
 
 #include "esp_log.h"
 
@@ -22,10 +24,11 @@ class skiSensor
 //Main hub and executive of the skiSensor library 
 {
     public:
-    
-    skiSensor();
+      
+    skiSensor(BLEInterface* pBLEInterface);
     
     void initialize();
+    void run();
     void streamRawValuesToSerial();
     void streamRawValuesToBLE();
     void setOutput(char outputType = 0){message::s_routerType = outputType;}  //0 = Serial, 1= BLE, 2= Both
@@ -33,15 +36,23 @@ class skiSensor
     std::vector<int16_t> getRawAcceleration();
     std::vector<int16_t> getRawRotationalVelocity();
     std::vector<int16_t> getRawHeading();
-
     
+
+    enum devicestates {
+    //This is not a user-modifiable value
+        starting,
+        ready,
+        running,
+        error
+    };
+
 
     private:
     
     ICM20948 IMU;
     AK09916 MAG;
     esp32 controller;
-    BLE BLEProcess;
+    BLEInterface *pBLEProcess;
 
     MotionState acceleration{true, 6};
     MotionState rotationalVelocity{true, 6};
@@ -49,6 +60,8 @@ class skiSensor
 
     uint64_t serializeVector(std::vector<int16_t> inputVector);
 
+    int devicemode;
+    int devicestate;
     //methods
 
 };

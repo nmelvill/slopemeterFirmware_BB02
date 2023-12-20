@@ -14,13 +14,13 @@
 #define HEADING_CHARACTERISTIC_UUID         "9c71c184-8788-4c25-8368-26ed1e87cd94"
 #define TEMPERATURE_CHARACTERISTIC_UUID     "16bb58ab-5b69-4fc6-9bf5-a6794031e6cc"
 #define BATTERY_LIFE_CHARACTERISTIC_UUID    "1a9e87a5-a475-44ca-9872-cb18779fad64"
+#define DEVICE_MODE_UUID                    "254b498a-5313-4833-b820-49b1815394f4"
 
 
-
-class BLE
+class BLEInterface
 {
     public:
-    BLE();
+    BLEInterface();
     void initialize();
     void startService();
     void startAdvertising();
@@ -37,6 +37,7 @@ class BLE
     NimBLECharacteristic *pHeadingCharacteristic;
     NimBLECharacteristic *pTemperatureCharacteristic;
     NimBLECharacteristic *pBatteryLifeCharacteristic;
+    NimBLECharacteristic *pDeviceModeCharacteristic;
     NimBLEAdvertising *pAdvertising;
 
     void initializeCharacteristics();
