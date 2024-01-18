@@ -1,33 +1,10 @@
 #include "BLE.h"
+#include "common.h"
+#include "callbacks.h"
 
 
 /** Handler class for characteristic actions */
-class CharacteristicCallbacks: public NimBLECharacteristicCallbacks {
-    
-    
-    void onRead(NimBLECharacteristic* pCharacteristic){
-        //Serial.print(pCharacteristic->getUUID().toString().c_str());
-        //Serial.print(": onRead(), value: ");
-        //Serial.println(pCharacteristic->getValue().c_str());
-    };
 
-
-    void onWrite(NimBLECharacteristic* pCharacteristic) {
-        //Serial.print(pCharacteristic->getUUID().toString().c_str());
-        //Serial.print(": onWrite(), value: ");
-        //Serial.println(pCharacteristic->getValue().c_str());
-    };
-    /** Called before notification or indication is sent,
-     *  the value can be changed here before sending if desired.
-     */
-
-
-    void onNotify(NimBLECharacteristic* pCharacteristic) {
-        //Serial.println("Sending notification to clients");
-    };
-
-
-};
 
 
 static CharacteristicCallbacks characteristicCallbacks;
@@ -40,10 +17,11 @@ void BLEInterface::initialize()
 {
     NimBLEDevice::init("BB02");
 
-    
     pServer = NimBLEDevice::createServer();
     pTelemetryService = pServer->createService(IMU_SERVICE_UUID);
     pDeviceInfoService = pServer->createService(DEVICE_INFO_SERVICE_UUID);
+    
+    characteristicCallbacks.addInterface(this);
     
     pAccelCharacteristic = pTelemetryService->createCharacteristic(ACCELERATION_CHARACTERISTIC_UUID,
                                                                     NIMBLE_PROPERTY::READ |
@@ -63,7 +41,7 @@ void BLEInterface::initialize()
     pBatteryLifeCharacteristic = pDeviceInfoService->createCharacteristic(BATTERY_LIFE_CHARACTERISTIC_UUID,
                                                                     NIMBLE_PROPERTY::READ);
 
-    pDeviceModeCharacteristic = pDeviceInfoService->createCharacteristic(DEVICE_MODE_UUID,
+    pControlPointCharacteristic = pDeviceInfoService->createCharacteristic(CONTROL_POINT_CHARACTERISTIC_UUID,
                                                                     NIMBLE_PROPERTY::READ |
                                                                     NIMBLE_PROPERTY::WRITE);
 
@@ -90,8 +68,8 @@ void BLEInterface::initializeCharacteristics()
     pBatteryLifeCharacteristic->setValue(0);
     pBatteryLifeCharacteristic->setCallbacks(&characteristicCallbacks);
 
-    pDeviceModeCharacteristic->setValue(0);
-    pDeviceModeCharacteristic->setCallbacks(&characteristicCallbacks);
+    pControlPointCharacteristic->setValue(0);
+    pControlPointCharacteristic->setCallbacks(&characteristicCallbacks);
 }
 
 
@@ -129,4 +107,49 @@ void BLEInterface::streamHeading(uint64_t headingValue)
 {
     pHeadingCharacteristic->setValue(headingValue);
     pHeadingCharacteristic->notify(true);
+}
+
+void BLEInterface::addMessage(std::string message) 
+
+{
+    messageQueue.push(message);
+
+    ESP_LOGD(TAG, "Message:  %s, added to the top of the message queue", message.c_str());
+}
+
+
+std::string BLEInterface::readMessage() 
+
+{
+    std::string message = messageQueue.front();
+    
+    ESP_LOGD(TAG, "Message at the top of the queue: %s", message.c_str());
+    
+    return message;
+}
+
+int BLEInterface::removeFirstMessage() 
+
+{
+    messageQueue.pop();
+
+    ESP_LOGD(TAG, "First message removed from the queue");
+
+    return 1;
+
+}
+
+bool BLEInterface::isMessage() {
+//Checks if there is a message in the message queue
+
+    if (messageQueue.empty())
+        
+        return false;
+    
+    else
+        ESP_LOGD(TAG, "%zu message(s) are available in the queue", messageQueue.size());
+        
+        return true;
+        
+        
 }

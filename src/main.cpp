@@ -7,6 +7,7 @@ skiSensor* BB02 = new skiSensor(BLEProcess);
 void setup() 
 {
 
+  
   BB02->initialize();
   BLEProcess->initialize();
   BLEProcess->startAdvertising();
@@ -15,7 +16,7 @@ void setup()
 
 
 void loop() {
-  delay(3000);
+  delay(500);
   BB02->run();
 }
 

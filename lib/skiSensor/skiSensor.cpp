@@ -1,4 +1,5 @@
 #include "skiSensor.h"
+#include "common.h"
 
 
 
@@ -42,6 +43,117 @@ void skiSensor::initialize()
 void skiSensor::run()
 {
 //TODO: Needs to have a handler for messages
+
+    if (pBLEProcess->isMessage()) {
+        std::string rawMessage = getMessage();
+        
+        std::vector<std::string> commandVector = parseMessage(rawMessage);
+        handleCommand(commandVector);
+        }
+
+    handleMode();
+}
+
+
+void skiSensor::handleMode()
+//Checks the device mode and executes the correct method for the given mode
+{
+    switch (devicemode)
+    {
+        case IDLE: {
+        //Does nothing during the main loop
+            break; }
+       
+        case STREAM_RAW:{
+        //Streams raw IMU values over BLE to the client
+            streamRawValuesToBLE();
+            break; }
+    }
+}
+
+
+std::string skiSensor::getMessage()
+//Gets first message in the queue from the BLE object and removes it from the queue.  Returns that message.
+{
+    std::string message = pBLEProcess->readMessage();
+
+    ESP_LOGD(TAG,"Message %s, recieved", message.c_str());
+    
+    pBLEProcess->removeFirstMessage();
+
+    
+    return message;
+
+}
+
+
+std::vector<std::string> skiSensor::parseMessage(std::string message)
+//Parses a message into the command and arguments using the <COMMAND> , <ARGUMENT1>, <ARGUMENT2>, ... format
+{
+    std::string delimiter = ",";
+    size_t position = 0;
+    std::string token;
+
+    std::vector<std::string> commandVector;
+
+
+    ESP_LOGD(TAG,"Message %s, ready to parse", message.c_str());
+    ESP_LOGD(TAG,"Delimiter location in message: %zu" ,message.find(delimiter));
+
+    if (message.find(delimiter) == std::string::npos) {
+    //If the position for the delimiter doesn't exist then use the message as is as the first item in the command vector.
+        
+        commandVector.push_back(message);
+        
+    }
+    
+    else {
+    //If the position of the delimiter does exist then loop through the string and add each substring before the delimiter to the vector in 
+    //order.
+
+        while((position = message.find(delimiter)) != std::string::npos) {
+        
+            std::string token = message.substr(0, position);
+
+            commandVector.push_back(token);
+
+            message.erase(0,position + delimiter.length());
+        }
+    }
+    
+    ESP_LOGD(TAG, "Message parsed to command: %s", commandVector[0].c_str());
+    //ESP_LOGD(TAG,"message parsed");
+
+
+    return commandVector;
+}
+
+
+void skiSensor::handleCommand(std::vector<std::string> commandVector)
+//Using a conditional switch case that takes the first item of the commandVector and matches it with the appropriate function call
+//Takes a vector with the first item the name of the function and the successive items the arguments, see devicemode enum
+{
+    std::string command = commandVector[0];
+    
+    int commandNum = commandMap[command];
+
+    
+    ESP_LOGD(TAG, "Command %s mapped to command Number: %d", command.c_str(), commandMap[command]);    
+
+    switch (commandNum)
+    {
+        case STOP: {
+        //The command stop will put the device into an IDLE mode and the run method will just break during the loop and will not execute anything    
+            devicemode = IDLE;
+            ESP_LOGD(TAG, "Device Mode changed to IDLE");
+            break ;}
+    
+        case STREAM_RAW_VALUES: {
+        //The command streamRaw will put the device into a STREAM_RAW mode which will execute the StreamRawValuesToBLE method during the loop   
+            devicemode = STREAM_RAW;
+            ESP_LOGD(TAG, "Device Mode changed to STREAM_RAW");
+            break ;}
+    }
 }
 
 
