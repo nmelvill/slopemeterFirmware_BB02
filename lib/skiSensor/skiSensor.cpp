@@ -35,6 +35,7 @@ void skiSensor::initialize()
     
 
     delay(500);
+    devicestate = ready;
 
     
 }

@@ -36,6 +36,8 @@ public:
     std::vector<std::string> parseMessage(std::string message);
     void handleCommand(std::vector<std::string> commandVector);
     void handleMode();
+    int getMode() {return devicemode;}
+    int getState() {return devicestate;}
 
 
     std::vector<int16_t> getRawAcceleration();

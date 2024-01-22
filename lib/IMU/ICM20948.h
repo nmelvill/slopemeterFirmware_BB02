@@ -11,8 +11,8 @@ class Register
 {
     public:
     Register(const uint8_t I2CAddress, const uint8_t regAddress, const char userBank=0);
-    uint8_t Write(uint8_t writeValue, bool printValues = true);
-    uint8_t Read(bool printValues = true); 
+    uint8_t Write(uint8_t writeValue, bool printValues = false);
+    uint8_t Read(bool printValues = false); 
 
     // accessors
     uint8_t getDeviceAddress() {return deviceAddress;}
